@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public interface ICatalogRepository
+    public interface ICatalogRepository<TEntity>
     {
         Task<IEnumerable<Product>> GetProductsAsync();
 
@@ -14,11 +14,9 @@
 
         Task<IEnumerable<Product>> GetProductByCategoryAsync(string categoryName);
 
-        Task AddAsync<TEntity>(TEntity entity)
-            where TEntity : class;
+        Task AddAsync(TEntity entity);
 
-        Task UpdateAsync<TEntity>(TEntity entity)
-            where TEntity : class;
+        Task<bool> UpdateAsync(TEntity entity);
 
         Task<bool> DeleteAsync(string id);
     }

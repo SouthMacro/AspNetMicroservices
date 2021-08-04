@@ -1,11 +1,12 @@
 ﻿namespace DataAccessCore.Catalog.API.Context
 {
+    using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions;
     using DataAccessCore.Catalog.API.Context.OtherContext;
     using DataAccessCore.Catalog.API.Entities;
     using Microsoft.Extensions.Configuration;
     using MongoDB.Driver;
 
-    public class CatalogContext : ICatalogContext
+    public class CatalogContext : MongoContextFacade<TEntity>, ICatalogContext
     {
         public CatalogContext(IConfiguration configuration)
         {

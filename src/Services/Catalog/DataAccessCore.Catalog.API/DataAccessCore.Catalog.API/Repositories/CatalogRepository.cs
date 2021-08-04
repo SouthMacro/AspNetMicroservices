@@ -1,31 +1,39 @@
 ﻿namespace DataAccessCore.Catalog.API.Repositories
 {
     using DataAccessCore.Catalog.API.Context;
+    using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions;
     using DataAccessCore.Catalog.API.Entities;
     using MongoDB.Driver;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public class CatalogRepository : ICatalogRepository
+    public class CatalogRepository<TEntity> : ICatalogRepository<TEntity>
+        where TEntity : ITemplateFunction
     {
-        private readonly ICatalogRepository _catalogRepository;
         private readonly ICatalogContext _catalogContext;
+        private static IMongoCollection<TEntity> _collection;
 
-        public CatalogRepository(ICatalogRepository catalogRepository, ICatalogContext catalogContext)
+        internal static Func<IMongoContextFacade<TEntity>> MongoFunction = () => new MongoContextFacade<TEntity>(_collection);
+
+        public CatalogRepository(ICatalogContext catalogContext)
         {
-            this._catalogRepository = catalogRepository ?? throw new ArgumentNullException(nameof(catalogRepository));
             this._catalogContext = catalogContext ?? throw new ArgumentNullException(nameof(catalogContext));
         }
 
-        public Task AddAsync<TEntity>(TEntity entity) where TEntity : class
+        public async Task AddAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            IMongoContextFacade<TEntity> configurationBuilder = MongoFunction();
+            await configurationBuilder.InsertOneAsync(entity);
         }
 
-        public Task UpdateAsync<TEntity>(TEntity entity) where TEntity : class
+        // TODO: For JSON format need checking filter: a => a.Id == entity.Id <---- it isn`t delegate type (Facade review need)
+        public async Task<bool> UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            IMongoContextFacade<TEntity> configurationBuilder = MongoFunction();
+            var data = await configurationBuilder.ReplaceOneAsync(replacement: entity);
+
+            return data.IsAcknowledged && data.ModifiedCount > 0;
         }
 
         public Task<bool> DeleteAsync(string id)
@@ -38,19 +46,23 @@
             return await _catalogContext.Products.Find(product => true).ToListAsync();
         }
 
-        public Task<IEnumerable<Product>> GetProductByCategoryAsync(string categoryName)
+        public async Task<IEnumerable<Product>> GetProductByCategoryAsync(string categoryName)
         {
-            throw new NotImplementedException();
+            FilterDefinition<Product> filterDefinition = Builders<Product>.Filter.Eq(product => product.Category, categoryName);
+
+            return await _catalogContext.Products.Find(filterDefinition).ToListAsync();
         }
 
-        public Task<Product> GetProductByIdAsync(string id)
+        public async Task<Product> GetProductByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            return await _catalogContext.Products.Find(product => product.ProductId == id).FirstOrDefaultAsync();
         }
 
-        public Task<IEnumerable<Product>> GetProductByNameAsync(string name)
+        public async Task<IEnumerable<Product>> GetProductByNameAsync(string name)
         {
-            throw new NotImplementedException();
+            FilterDefinition<Product> filterDefinition = Builders<Product>.Filter.Eq(product => product.ProductName, name);
+
+            return await _catalogContext.Products.Find(filterDefinition).ToListAsync();
         }
     }
 }
