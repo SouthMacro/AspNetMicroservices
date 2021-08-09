@@ -1,6 +1,11 @@
 version: '3.4'
 
 services:
+  catalogdb:
+    container_name: catalogdb
+    restart: always
+    ports:
+      - "27017:27017"
   catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
