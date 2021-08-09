@@ -6,9 +6,9 @@
     using System;
     using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions.Interfaces;
 
-    public abstract class TemplateFunction : ITemplateFunction
+    public abstract class TemplateFunction<TEntityType> : ITemplateFunction<TEntityType>
     {
-        public ObjectId Id { get; set; }
+        public TEntityType Id { get; set; }
 
         [Column(TypeName = "DateTime2")]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

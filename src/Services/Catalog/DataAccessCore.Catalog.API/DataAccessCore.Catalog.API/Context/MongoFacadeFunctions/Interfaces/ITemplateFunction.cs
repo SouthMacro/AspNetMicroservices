@@ -4,11 +4,11 @@
     using MongoDB.Bson;
     using System;
 
-    public interface ITemplateFunction
+    public interface ITemplateFunction<TEntityType>
     {
         [BsonId]
         [BsonRepresentation(BsonType.String)]
-        ObjectId Id { get; set; }
+        TEntityType Id { get; set; }
 
         DateTime CreatedDate { get; }
 

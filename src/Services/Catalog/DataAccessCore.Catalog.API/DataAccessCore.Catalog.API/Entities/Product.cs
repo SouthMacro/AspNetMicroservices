@@ -1,14 +1,11 @@
 ﻿namespace DataAccessCore.Catalog.API.Entities
 {
+    using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions;
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;
 
-    public class Product
+    public class Product : TemplateFunction<string>
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string ProductId { get; set; }
-
         [BsonElement("ProductName")]
         public string ProductName { get; set; }
 

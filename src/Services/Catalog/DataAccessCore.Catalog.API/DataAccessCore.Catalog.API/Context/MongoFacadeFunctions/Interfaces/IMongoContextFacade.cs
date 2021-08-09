@@ -7,8 +7,8 @@ using MongoDB.Driver;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
-    public interface IMongoContextFacade<TEntity> 
-        where TEntity : ITemplateFunction
+    public interface IMongoContextFacade<TEntity, TEntityType> 
+        where TEntity : ITemplateFunction<TEntityType>
     {
         IQueryable<TEntity> AsQueryable();
 
@@ -23,10 +23,6 @@ using MongoDB.Driver;
 
         Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression);
 
-        TEntity FindById(string id);
-
-        Task<TEntity> FindByIdAsync(string id);
-
         void InsertOne(TEntity entity);
 
         Task InsertOneAsync(TEntity entity);
@@ -38,10 +34,6 @@ using MongoDB.Driver;
         void InsertMany(ICollection<TEntity> entitys);
 
         Task InsertManyAsync(ICollection<TEntity> entitys);
-
-        void DeleteById(string id);
-
-        Task DeleteByIdAsync(string id);
 
         void DeleteOne(Expression<Func<TEntity, bool>> filterExpression);
 

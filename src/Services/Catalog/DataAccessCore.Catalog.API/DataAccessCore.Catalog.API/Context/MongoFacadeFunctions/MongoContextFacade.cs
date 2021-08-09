@@ -9,8 +9,8 @@
     using MongoDB.Bson;
     using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions.Interfaces;
 
-    public class MongoContextFacade<TEntity> : IMongoContextFacade<TEntity>
-        where TEntity : ITemplateFunction
+    public class MongoContextFacade<TEntity, TEntityType> : IMongoContextFacade<TEntity, TEntityType>
+        where TEntity : ITemplateFunction<TEntityType>
     {
         private readonly IMongoCollection<TEntity> _collection;
 
@@ -54,24 +54,6 @@
         {
             return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
         }
-
-        public virtual TEntity FindById(string id)
-        {
-            var objectId = new ObjectId(id);
-            var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, objectId);
-            return _collection.Find(filter).SingleOrDefault();
-        }
-
-        public virtual Task<TEntity> FindByIdAsync(string id)
-        {
-            return Task.Run(() =>
-            {
-                var objectId = new ObjectId(id);
-                var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, objectId);
-                return _collection.Find(filter).SingleOrDefaultAsync();
-            });
-        }
-
 
         public virtual void InsertOne(TEntity entity)
         {
@@ -118,23 +100,6 @@
         public Task<DeleteResult> DeleteOneAsync(FilterDefinition<TEntity> filter)
         {
             return this._collection.DeleteOneAsync(filter);
-        }
-
-        public void DeleteById(string id)
-        {
-            var objectId = new ObjectId(id);
-            var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, objectId);
-            _collection.FindOneAndDelete(filter);
-        }
-
-        public Task DeleteByIdAsync(string id)
-        {
-            return Task.Run(() =>
-            {
-                var objectId = new ObjectId(id);
-                var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, objectId);
-                _collection.FindOneAndDeleteAsync(filter);
-            });
         }
 
         public void DeleteMany(Expression<Func<TEntity, bool>> filterExpression)

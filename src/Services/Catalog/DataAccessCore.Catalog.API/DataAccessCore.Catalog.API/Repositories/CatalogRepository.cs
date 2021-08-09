@@ -9,18 +9,18 @@
     using System.Threading.Tasks;
 
     public class CatalogRepository<TEntity> : ICatalogRepository<TEntity>
-        where TEntity : ITemplateFunction
+        where TEntity : ITemplateFunction<string>
     {
         private readonly ICatalogContext _catalogContext;
-        private static readonly IMongoContextFacade<TEntity> _collection;
+        private static readonly IMongoContextFacade<TEntity, string> _collection;
 
         public CatalogRepository(ICatalogContext catalogContext)
         {
             this._catalogContext = catalogContext ?? throw new ArgumentNullException(nameof(catalogContext));
         }
 
-        internal static Func<IMongoContextFacade<TEntity>> MongoFunc = () => _collection;
-        IMongoContextFacade<TEntity> mongoBuilder = MongoFunc();
+        internal static Func<IMongoContextFacade<TEntity, string>> MongoFunc = () => _collection;
+        IMongoContextFacade<TEntity, string> mongoBuilder = MongoFunc();
 
         public async Task AddAsync(TEntity entity)
         {
@@ -57,9 +57,10 @@
             return await _catalogContext.Products.Find(filterDefinition).ToListAsync();
         }
 
+        // TODO: Need check
         public async Task<Product> GetProductByIdAsync(string id)
         {
-            return await _catalogContext.Products.Find(product => product.ProductId == id).FirstOrDefaultAsync();
+            return await _catalogContext.Products.Find(product => product.Id.Equals(id)).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Product>> GetProductByNameAsync(string name)
