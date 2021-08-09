@@ -7,6 +7,7 @@
     using System;
     using System.Threading.Tasks;
     using MongoDB.Bson;
+    using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions.Interfaces;
 
     public class MongoContextFacade<TEntity> : IMongoContextFacade<TEntity>
         where TEntity : ITemplateFunction
@@ -99,10 +100,8 @@
             _collection.FindOneAndReplace(filter, entity);
         }
 
-        public virtual async Task<ReplaceOneResult> ReplaceOneAsync(TEntity replacement)
+        public virtual async Task<ReplaceOneResult> ReplaceOneAsync(FilterDefinition<TEntity> filter, TEntity replacement)
         {
-            var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, replacement.Id);
-
             return await _collection.ReplaceOneAsync(filter, replacement);
         }
 
@@ -114,6 +113,11 @@
         public Task DeleteOneAsync(Expression<Func<TEntity, bool>> filterExpression)
         {
             return Task.Run(() => _collection.FindOneAndDeleteAsync(filterExpression));
+        }
+
+        public Task<DeleteResult> DeleteOneAsync(FilterDefinition<TEntity> filter)
+        {
+            return this._collection.DeleteOneAsync(filter);
         }
 
         public void DeleteById(string id)

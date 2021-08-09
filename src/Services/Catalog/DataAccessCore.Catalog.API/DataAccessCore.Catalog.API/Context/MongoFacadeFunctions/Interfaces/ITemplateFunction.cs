@@ -1,4 +1,4 @@
-﻿namespace DataAccessCore.Catalog.API.Context.MongoFacadeFunctions
+﻿namespace DataAccessCore.Catalog.API.Context.MongoFacadeFunctions.Interfaces
 {
     using MongoDB.Bson.Serialization.Attributes;
     using MongoDB.Bson;

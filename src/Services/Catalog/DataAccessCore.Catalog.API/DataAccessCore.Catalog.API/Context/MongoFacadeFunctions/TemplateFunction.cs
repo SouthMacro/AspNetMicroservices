@@ -4,13 +4,14 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.ComponentModel.DataAnnotations;
     using System;
+    using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions.Interfaces;
 
     public abstract class TemplateFunction : ITemplateFunction
     {
         public ObjectId Id { get; set; }
 
         [Column(TypeName = "DateTime2")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)] // this will prevent the column to be updated
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedDate { get; internal set; }
 
         [Column(TypeName = "DateTime2")]

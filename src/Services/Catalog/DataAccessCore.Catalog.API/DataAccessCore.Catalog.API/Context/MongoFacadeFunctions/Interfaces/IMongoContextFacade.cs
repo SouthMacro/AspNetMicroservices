@@ -1,4 +1,4 @@
-﻿namespace DataAccessCore.Catalog.API.Context.MongoFacadeFunctions
+﻿namespace DataAccessCore.Catalog.API.Context.MongoFacadeFunctions.Interfaces
 {
 using MongoDB.Driver;
     using System;
@@ -33,7 +33,7 @@ using MongoDB.Driver;
 
         void ReplaceOne(TEntity entity);
 
-        Task<ReplaceOneResult> ReplaceOneAsync(TEntity replacement);
+        Task<ReplaceOneResult> ReplaceOneAsync(FilterDefinition<TEntity> filter, TEntity replacement);
 
         void InsertMany(ICollection<TEntity> entitys);
 
@@ -46,6 +46,8 @@ using MongoDB.Driver;
         void DeleteOne(Expression<Func<TEntity, bool>> filterExpression);
 
         Task DeleteOneAsync(Expression<Func<TEntity, bool>> filterExpression);
+
+        Task<DeleteResult> DeleteOneAsync(FilterDefinition<TEntity> filter);
 
         void DeleteMany(Expression<Func<TEntity, bool>> filterExpression);
 

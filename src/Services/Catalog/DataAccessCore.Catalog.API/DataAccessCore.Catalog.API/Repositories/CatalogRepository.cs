@@ -1,7 +1,7 @@
 ﻿namespace DataAccessCore.Catalog.API.Repositories
 {
     using DataAccessCore.Catalog.API.Context;
-    using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions;
+    using DataAccessCore.Catalog.API.Context.MongoFacadeFunctions.Interfaces;
     using DataAccessCore.Catalog.API.Entities;
     using MongoDB.Driver;
     using System;
@@ -12,33 +12,37 @@
         where TEntity : ITemplateFunction
     {
         private readonly ICatalogContext _catalogContext;
-        private static IMongoCollection<TEntity> _collection;
-
-        internal static Func<IMongoContextFacade<TEntity>> MongoFunction = () => new MongoContextFacade<TEntity>(_collection);
+        private static readonly IMongoContextFacade<TEntity> _collection;
 
         public CatalogRepository(ICatalogContext catalogContext)
         {
             this._catalogContext = catalogContext ?? throw new ArgumentNullException(nameof(catalogContext));
         }
 
+        internal static Func<IMongoContextFacade<TEntity>> MongoFunc = () => _collection;
+        IMongoContextFacade<TEntity> mongoBuilder = MongoFunc();
+
         public async Task AddAsync(TEntity entity)
         {
-            IMongoContextFacade<TEntity> configurationBuilder = MongoFunction();
-            await configurationBuilder.InsertOneAsync(entity);
+            await mongoBuilder.InsertOneAsync(entity);
         }
 
-        // TODO: For JSON format need checking filter: a => a.Id == entity.Id <---- it isn`t delegate type (Facade review need)
         public async Task<bool> UpdateAsync(TEntity entity)
         {
-            IMongoContextFacade<TEntity> configurationBuilder = MongoFunction();
-            var data = await configurationBuilder.ReplaceOneAsync(replacement: entity);
+            var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, entity.Id);
+
+            var data = await mongoBuilder.ReplaceOneAsync(filter: filter, replacement: entity);
 
             return data.IsAcknowledged && data.ModifiedCount > 0;
         }
 
-        public Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            FilterDefinition<TEntity> filterDefinition = Builders<TEntity>.Filter.Eq(product => product.Id.ToString(), id);
+
+            DeleteResult deleteResult = await mongoBuilder.DeleteOneAsync(filterDefinition);
+
+            return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
         }
 
         public async Task<IEnumerable<Product>> GetProductsAsync()
