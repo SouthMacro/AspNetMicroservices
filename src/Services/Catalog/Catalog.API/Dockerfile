@@ -3,6 +3,8 @@
 # Starting conteainer
 # 1) docker-compose -f .\docker-compose.yml -f .\docker-compose.override.yml up -d
 # 2) http://localhost:8000/swagger/index.html
+# 3) Remove all images: docker rmi $(docker images -aq)
+# 4) To run mongoclient: http://localhost:3000/
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 EXPOSE 80
