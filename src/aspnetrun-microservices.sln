@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backet.API", "Services\Bask
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccessCore.Backet.API", "DataAccessCore.Backet.API", "{9D75999E-F882-4C1C-B7F0-EF56652DB986}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessCore.Backet.API", "Services\Basket\DataAccessCore.Backet.API\DataAccessCore.Backet.API\DataAccessCore.Backet.API.csproj", "{167E95F8-53B1-4556-9438-8D23F7DC611C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessCore.Backet.API", "Services\Basket\DataAccessCore.Backet.API\DataAccessCore.Backet.API\DataAccessCore.Backet.API.csproj", "{167E95F8-53B1-4556-9438-8D23F7DC611C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -26,14 +26,16 @@
             return JsonConvert.DeserializeObject<ShoppingCart>(backet);
         }
 
-        public Task<ShoppingCart> UpdateBasketAsync(ShoppingCart shoppingCart)
+        public async Task<ShoppingCart> UpdateBasketAsync(ShoppingCart shoppingCart)
         {
-            throw new System.NotImplementedException();
+            await _distributedCache.SetStringAsync(shoppingCart.UserName, JsonConvert.SerializeObject(shoppingCart));
+
+            return await GetBasketAsync(shoppingCart.UserName);
         }
 
-        public Task DeleteBasketAsync(string userName)
+        public async Task DeleteBasketAsync(string userName)
         {
-            throw new System.NotImplementedException();
+            await _distributedCache.RemoveAsync(userName);
         }
     }
 }

@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\DataAccessCore.Backet.API\DataAccessCore.Backet.API\DataAccessCore.Backet.API.csproj" />
   </ItemGroup>
 
 </Project>
